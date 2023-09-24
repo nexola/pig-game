@@ -49,13 +49,15 @@ const fimDeJogo = function () {
 condicoesIniciais();
 
 btnManter.addEventListener('click', function () {
-  pontuacoes[jogadorAtivo] += pontuacaoAtual;
-  document.getElementById(`score--${jogadorAtivo}`).textContent =
-    pontuacoes[jogadorAtivo];
-  if (pontuacoes[jogadorAtivo] < 100) {
-    mudarJogador();
-  } else {
-    fimDeJogo();
+  if (pontuacaoAtual !== 0) {
+    pontuacoes[jogadorAtivo] += pontuacaoAtual;
+    document.getElementById(`score--${jogadorAtivo}`).textContent =
+      pontuacoes[jogadorAtivo];
+    if (pontuacoes[jogadorAtivo] < 100) {
+      mudarJogador();
+    } else {
+      fimDeJogo();
+    }
   }
 });
 
