@@ -172,16 +172,19 @@ main {
   .name {
     font-size: 3rem;
     text-transform: capitalize;
-    letter-spacing: 0;
-    word-spacing: 0;
   }
 }
 
 @media (max-width: 500px) {
+  body {
+    align-items: initial;
+  }
+
   main {
     width: 50rem;
     height: 40rem;
     overflow: initial;
+    margin-top: 23.5rem;
   }
 
   .player {
