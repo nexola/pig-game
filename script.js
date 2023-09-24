@@ -1,66 +1,75 @@
 'use strict';
 
 // Selecionando os elementos
-const pontuacao1El = document.getElementById('score--1');
+const jogador0El = document.querySelector('.player--0');
+const jogador1El = document.querySelector('.player--1');
 const dadoEl = document.querySelector('.dice');
-
 const btnNovo = document.querySelector('.btn--new');
 const btnRolar = document.querySelector('.btn--roll');
 const btnManter = document.querySelector('.btn--hold');
 
-const jogadores = document.querySelectorAll('.player');
-
-const valorAtual1 = document.getElementById('current--1');
-
-const pontuacaoAtual1El = document.getElementById('current--1');
-
-// Player 1
-const player1 = {
-  secao: document.querySelector('.player--0'),
-  nome: document.getElementById('name--0'),
-  pontuacaoTotalEl: document.getElementById('score--0'),
-  pontuacaoAtualEl: document.getElementById('current--0'),
-  ativo: true,
-};
-
-// Player 2
-const player2 = {
-  secao: document.querySelector('.player--1'),
-  nome: document.getElementById('name--1'),
-  pontuacaoTotalEl: document.getElementById('score--1'),
-  pontuacaoAtualEl: document.getElementById('current--1'),
-  ativo: false,
-};
-
-const mudarJogador = function (jogadorAtual, proximoJogador) {
-  jogadores.forEach(jogador => {
-    jogador.classList.add('player--active');
-  });
-  jogadorAtual.secao.classList.remove('player--active');
-  proximoJogador.ativo = true;
-  jogadorAtual.ativo = false;
-};
-
 // Condições iniciais
-player1.pontuacaoTotalEl.textContent = 0;
-pontuacao1El.textContent = 0;
-dadoEl.classList.add('hidden');
-
+let pontuacoes = [0, 0];
 let pontuacaoAtual = 0;
+let jogadorAtivo = 0;
 
-const rolarDado = function () {
+const condicoesIniciais = function () {
+  document
+    .querySelector(`.player--${jogadorAtivo}`)
+    .classList.remove('player--winner');
+  document.getElementById('score--0').textContent = 0;
+  document.getElementById('score--1').textContent = 0;
+  dadoEl.classList.add('hidden');
+  document.getElementById('current--0').textContent = 0;
+  document.getElementById('current--1').textContent = 0;
+  if (jogadorAtivo === 1) mudarJogador();
+  pontuacoes = [0, 0];
+  pontuacaoAtual = 0;
+  jogadorAtivo = 0;
+  btnRolar.style.display = 'block';
+  btnManter.style.display = 'block';
+};
+
+const mudarJogador = function () {
+  pontuacaoAtual = 0;
+  document.getElementById(`current--${jogadorAtivo}`).textContent = 0;
+  jogador0El.classList.toggle('player--active');
+  jogador1El.classList.toggle('player--active');
+  jogadorAtivo = jogadorAtivo ? 0 : 1;
+};
+
+const fimDeJogo = function () {
+  document
+    .querySelector(`.player--${jogadorAtivo}`)
+    .classList.add('player--winner');
+  btnRolar.style.display = 'none';
+  btnManter.style.display = 'none';
+};
+
+condicoesIniciais();
+
+btnManter.addEventListener('click', function () {
+  pontuacoes[jogadorAtivo] += pontuacaoAtual;
+  document.getElementById(`score--${jogadorAtivo}`).textContent =
+    pontuacoes[jogadorAtivo];
+  if (pontuacoes[jogadorAtivo] < 100) {
+    mudarJogador();
+  } else {
+    fimDeJogo();
+  }
+});
+
+btnRolar.addEventListener('click', function () {
   const valorDado = Math.floor(Math.random() * 6 + 1);
   dadoEl.setAttribute('src', `dice-${valorDado}.png`);
   dadoEl.classList.remove('hidden');
-  console.log(valorDado);
   if (valorDado !== 1) {
     pontuacaoAtual += valorDado;
+    document.getElementById(`current--${jogadorAtivo}`).textContent =
+      pontuacaoAtual;
   } else {
-    mudarJogador(
-      player1.ativo ? player1 : player2,
-      player2.ativo ? player2 : player1
-    );
+    mudarJogador();
   }
-};
+});
 
-btnRolar.addEventListener('click', rolarDado);
+btnNovo.addEventListener('click', condicoesIniciais);
